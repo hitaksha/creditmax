@@ -1,0 +1,16 @@
+CREDITMAX WEBSITE - QUICK START
+
+PROBLEM: Double-clicking index.html shows blank page
+SOLUTION: Use development server
+
+STEPS:
+1. Install Node.js from nodejs.org
+2. Open Command Prompt
+3. Navigate to website folder: cd C:\your\folder\path
+4. Run: npm install
+5. Run: npm run dev
+6. Open the localhost URL shown in browser
+
+THAT'S IT! Your website will work perfectly.
+
+For help: info@creditmax.in | +91 9987593277
