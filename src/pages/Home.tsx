@@ -34,7 +34,7 @@ const Home: React.FC = () => {
     },
     {
       title: 'Personal Loan',
-      rate: '7.5%',
+      rate: '10.5%',
       tagline: 'Meet your personal financial needs',
       description: 'Instant personal loans for all your requirements',
       href: '/personal-loan',
