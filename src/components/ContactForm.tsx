@@ -27,9 +27,9 @@ const ContactForm: React.FC = () => {
 
     try {
       // EmailJS configuration - REPLACE THESE WITH YOUR ACTUAL VALUES
-      const serviceId = 'YOUR_SERVICE_ID';     // Replace with your Service ID from Step 2
-      const templateId = 'YOUR_TEMPLATE_ID';   // Replace with your Template ID from Step 3
-      const publicKey = 'YOUR_PUBLIC_KEY';     // Replace with your Public Key from Step 1
+      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;     // Replace with your Service ID from Step 2
+      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;   // Replace with your Template ID from Step 3
+      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;     // Replace with your Public Key from Step 1
 
       const templateParams = {
         from_name: formData.name,
@@ -41,7 +41,12 @@ const ContactForm: React.FC = () => {
         to_email: 'info@creditmax.in', // Your email where you want to receive submissions
       };
 
-      await emailjs.send(serviceId, templateId, templateParams, publicKey);
+      await fetch('/.netlify/functions/send-email', {
+  	method: 'POST',
+  	headers: { 'Content-Type': 'application/json' },
+  	body: JSON.stringify(formData)
+      })
+
       
       setIsSubmitted(true);
       
