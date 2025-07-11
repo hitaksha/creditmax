@@ -1,7 +1,6 @@
-import { Handler } from '@netlify/functions';
-import nodemailer from 'nodemailer';
+const nodemailer = require('nodemailer');
 
-const handler: Handler = async (event) => {
+exports.handler = async function (event) {
   const data = JSON.parse(event.body || '{}');
 
   const transporter = nodemailer.createTransport({
@@ -9,13 +8,13 @@ const handler: Handler = async (event) => {
     port: 465,
     secure: true,
     auth: {
-      user: process.env.EMAIL_USERNAME,     // ✅ Corrected
-      pass: process.env.EMAIL_PASSWORD,  // ✅ Corrected
+      user: process.env.EMAIL_USERNAME,
+      pass: process.env.EMAIL_PASSWORD,
     },
   });
 
   const mailOptions = {
-    from: `"CreditMax Website" <${process.env.EMAIL_USERNAME}>`, // ✅ Updated
+    from: `"CreditMax Website" <${process.env.EMAIL_USERNAME}>`,
     to: 'info@creditmax.in',
     subject: `New Loan Application from ${data.name}`,
     html: `
@@ -43,5 +42,3 @@ const handler: Handler = async (event) => {
     };
   }
 };
-
-export { handler };
