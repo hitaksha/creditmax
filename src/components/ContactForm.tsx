@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Send, CheckCircle } from 'lucide-react';
-import emailjs from '@emailjs/browser';
 
 const ContactForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +13,9 @@ const ContactForm: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
@@ -26,31 +27,15 @@ const ContactForm: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // EmailJS configuration - REPLACE THESE WITH YOUR ACTUAL VALUES
-      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;     // Replace with your Service ID from Step 2
-      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;   // Replace with your Template ID from Step 3
-      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;     // Replace with your Public Key from Step 1
+      const response = await fetch('/.netlify/functions/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
 
-      const templateParams = {
-        from_name: formData.name,
-        from_email: formData.email,
-        phone: formData.phone,
-        loan_type: formData.loanType || 'Not specified',
-        amount: formData.amount || 'Not specified',
-        message: formData.message || 'No additional message',
-        to_email: 'info@creditmax.in', // Your email where you want to receive submissions
-      };
+      if (!response.ok) throw new Error('Email failed to send');
 
-      await fetch('/.netlify/functions/send-email', {
-  	method: 'POST',
-  	headers: { 'Content-Type': 'application/json' },
-  	body: JSON.stringify(formData)
-      })
-
-      
       setIsSubmitted(true);
-      
-      // Reset form after 3 seconds
       setTimeout(() => {
         setIsSubmitted(false);
         setFormData({
@@ -63,8 +48,8 @@ const ContactForm: React.FC = () => {
         });
       }, 3000);
     } catch (error) {
-      console.error('Error sending email:', error);
-      alert('Failed to send message. Please try again or contact us directly at info@creditmax.in');
+      console.error('Error sending form:', error);
+      alert('Message failed. Please contact us at info@creditmax.in');
     } finally {
       setIsSubmitting(false);
     }

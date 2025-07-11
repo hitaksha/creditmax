@@ -9,13 +9,13 @@ const handler: Handler = async (event) => {
     port: 465,
     secure: true,
     auth: {
-      user: process.env.GODADDY_EMAIL,     // ✅ Corrected
-      pass: process.env.GODADDY_PASSWORD,  // ✅ Corrected
+      user: process.env.EMAIL_USERNAME,     // ✅ Corrected
+      pass: process.env.EMAIL_PASSWORD,  // ✅ Corrected
     },
   });
 
   const mailOptions = {
-    from: `"CreditMax Website" <${process.env.GODADDY_EMAIL}>`, // ✅ Updated
+    from: `"CreditMax Website" <${process.env.EMAIL_USERNAME}>`, // ✅ Updated
     to: 'info@creditmax.in',
     subject: `New Loan Application from ${data.name}`,
     html: `

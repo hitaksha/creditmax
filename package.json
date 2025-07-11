@@ -32,5 +32,18 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.3.0",
     "vite": "^7.0.3"
-  }
+  },
+  "description": "## Prerequisites",
+  "main": "eslint.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hitaksha/creditmax.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hitaksha/creditmax/issues"
+  },
+  "homepage": "https://github.com/hitaksha/creditmax#readme"
 }
