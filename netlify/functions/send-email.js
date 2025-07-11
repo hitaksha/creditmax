@@ -13,7 +13,7 @@ exports.handler = async function (event) {
 
   const mailOptions = {
     from: `"CreditMax Website" <${process.env.EMAIL_USERNAME}>`,
-    to: 'yourgmail@gmail.com', // where the message will be sent
+    to: 'jatin28in@gmail.com', // where the message will be sent
     subject: `New Loan Application from ${data.name}`,
     html: `
       <h2>New Loan Application</h2>
