@@ -14,7 +14,6 @@ import Contact from './pages/Contact';
 
 // 🟢 Step: Import Floating WhatsApp
 import { FloatingWhatsApp } from 'react-floating-whatsapp';
-import 'react-floating-whatsapp/dist/style.css';
 
 function App() {
   return (
@@ -35,21 +34,21 @@ function App() {
       </main>
 
       {/* 🟢 Floating WhatsApp Widget */}
-      <FloatingWhatsApp
-        phoneNumber="919987593277"
-        accountName="CreditMax"
-        chatMessage="Hello! How can we help you today?"
-        statusMessage="Typically replies within minutes"
-        avatar="/logo.png" // Optional: add logo.png to /public
-        allowClickAway
-        notification
-        onClick={() => {
-          window.gtag?.('event', 'whatsapp_click', {
-            event_category: 'engagement',
-            event_label: 'Floating Widget',
-          });
-        }}
-      />
+	<FloatingWhatsApp
+  	  phoneNumber="919987593277"
+  	  accountName="CreditMax"
+  	  chatMessage="Hello! How can we help you today?"
+  	  statusMessage="Typically replies within minutes"
+  	  allowClickAway
+  	  notification
+  	  onClick={() => {
+    	    window.gtag?.('event', 'whatsapp_click', {
+      	       event_category: 'engagement',
+      	       event_label: 'Floating Widget',
+    	    });
+  	  }}
+	/>
+
 
       <Footer />
     </div>
