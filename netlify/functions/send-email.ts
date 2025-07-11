@@ -1,19 +1,21 @@
-import { Handler } from '@netlify/functions'
-import nodemailer from 'nodemailer'
+import { Handler } from '@netlify/functions';
+import nodemailer from 'nodemailer';
 
 const handler: Handler = async (event) => {
-  const data = JSON.parse(event.body || '{}')
+  const data = JSON.parse(event.body || '{}');
 
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.secureserver.net',
+    port: 465,
+    secure: true,
     auth: {
-      user: process.env.EMAIL_USERNAME,
-      pass: process.env.EMAIL_PASSWORD, // App password, not regular Gmail password
+      user: process.env.GODADDY_EMAIL,     // ✅ Corrected
+      pass: process.env.GODADDY_PASSWORD,  // ✅ Corrected
     },
-  })
+  });
 
   const mailOptions = {
-    from: `"CreditMax" <${process.env.EMAIL_USERNAME}>`,
+    from: `"CreditMax Website" <${process.env.GODADDY_EMAIL}>`, // ✅ Updated
     to: 'info@creditmax.in',
     subject: `New Loan Application from ${data.name}`,
     html: `
@@ -24,16 +26,22 @@ const handler: Handler = async (event) => {
       <p><strong>Loan Type:</strong> ${data.loanType}</p>
       <p><strong>Amount:</strong> ₹${data.amount}</p>
       <p><strong>Message:</strong> ${data.message}</p>
-    `
-  }
+    `,
+  };
 
   try {
-    await transporter.sendMail(mailOptions)
-    return { statusCode: 200, body: JSON.stringify({ success: true }) }
+    await transporter.sendMail(mailOptions);
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ success: true }),
+    };
   } catch (error) {
-    console.error('Email sending failed:', error)
-    return { statusCode: 500, body: JSON.stringify({ error: 'Failed to send email' }) }
+    console.error('❌ Email sending failed:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Failed to send email' }),
+    };
   }
-}
+};
 
-export { handler }
+export { handler };
