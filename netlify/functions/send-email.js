@@ -4,9 +4,7 @@ exports.handler = async function (event) {
   const data = JSON.parse(event.body || '{}');
 
   const transporter = nodemailer.createTransport({
-    host: 'smtp.secureserver.net',
-    port: 465,
-    secure: true,
+    service: 'gmail',
     auth: {
       user: process.env.EMAIL_USERNAME,
       pass: process.env.EMAIL_PASSWORD,
@@ -15,7 +13,7 @@ exports.handler = async function (event) {
 
   const mailOptions = {
     from: `"CreditMax Website" <${process.env.EMAIL_USERNAME}>`,
-    to: 'info@creditmax.in',
+    to: 'yourgmail@gmail.com', // where the message will be sent
     subject: `New Loan Application from ${data.name}`,
     html: `
       <h2>New Loan Application</h2>
