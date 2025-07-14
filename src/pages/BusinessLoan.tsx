@@ -2,6 +2,7 @@ import React from 'react';
 import { TrendingUp, CheckCircle, Clock, Shield, ArrowRight } from 'lucide-react';
 import ContactForm from '../components/ContactForm';
 import EMICalculator from '../components/EMICalculator';
+import { Helmet } from 'react-helmet';
 
 const BusinessLoan: React.FC = () => {
   const features = [
@@ -46,17 +47,25 @@ const BusinessLoan: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Helmet>
+        <title>Unsecured Business Loan in Mumbai | CreditMax</title>
+        <meta
+          name="description"
+          content="Apply for unsecured business loans in Mumbai with CreditMax. Quick approval, no collateral, and expert support for SMEs across India."
+        />
+      </Helmet>
+
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Unsecured Business Loan
+                Unsecured Business Loan in Mumbai for SMEs
               </h1>
               <p className="text-xl mb-8 text-blue-100">
-                Fuel your business growth with our flexible unsecured business loans 
-                starting from 15% annual interest rate.
+                Looking for a fast and collateral-free unsecured business loan in Mumbai? 
+                CreditMax helps SMEs grow with flexible funding starting from 15% interest.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 text-center">
@@ -99,7 +108,7 @@ const BusinessLoan: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose Our Business Loan?
+              Why Choose Our Unsecured Business Loan in Mumbai?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Designed specifically for businesses looking to grow and expand their operations
@@ -191,7 +200,7 @@ const BusinessLoan: React.FC = () => {
                 Ready to Grow Your Business?
               </h2>
               <p className="text-xl text-gray-600 mb-8">
-                Apply for a business loan today and take your business to the next level. 
+                Based in Mumbai? Apply for an unsecured business loan today and take your business to the next level. 
                 Our experts will help you choose the best loan option for your needs.
               </p>
               <div className="space-y-6">
@@ -230,6 +239,11 @@ const BusinessLoan: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Hidden SEO Keywords */}
+      <div className="hidden">
+        unsecured business loan in Mumbai, SME funding Mumbai, collateral-free business loan, business finance Mumbai
+      </div>
     </div>
   );
 };
