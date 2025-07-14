@@ -51,8 +51,9 @@ const BusinessLoan: React.FC = () => {
         <title>Unsecured Business Loan in Mumbai | CreditMax</title>
         <meta
           name="description"
-          content="Apply for unsecured business loans in Mumbai with CreditMax. Quick approval, no collateral, and expert support for SMEs across India."
+          content="Apply for unsecured business loans in Mumbai with CreditMax. Quick approval, no collateral, and expert support 	  for SMEs across India."
         />
+	<link rel="canonical" href="https://www.creditmax.in/unsecured-business-loan-mumbai" />
       </Helmet>
 
       {/* Hero Section */}
