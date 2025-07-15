@@ -102,10 +102,12 @@ const Blog: React.FC = () => {
                   <Link
                     to={`/blog/${post.slug}`}
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold"
-                  >
-                    Read More
+                    aria-label={`Read more about ${post.title}`}
+                   >
+                    <span>Read more about {post.title}</span>
                     <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
+                   </Link>
+
                 </div>
               </article>
             ))}
@@ -189,13 +191,14 @@ const Blog: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <Link
+                   <Link
                     to={`/blog/${post.slug}`}
-                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold mt-4"
-                  >
-                    Read More
+                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold"
+                    aria-label={`Read more about ${post.title}`}
+                   >
+                    <span>Read more about {post.title}</span>
                     <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
+                   </Link>
                 </div>
               </article>
             ))}

@@ -31,39 +31,68 @@ const BlogPost: React.FC = () => {
 
   // Format content with proper styling
   const formatContent = (content: string) => {
-    return content
-      .split('\n')
-      .map((line, index) => {
-        if (line.startsWith('# ')) {
-          return <h1 key={index} className="text-3xl font-bold text-gray-900 mb-6 mt-8">{line.substring(2)}</h1>;
-        } else if (line.startsWith('## ')) {
-          return <h2 key={index} className="text-2xl font-bold text-gray-900 mb-4 mt-6">{line.substring(3)}</h2>;
-        } else if (line.startsWith('### ')) {
-          return <h3 key={index} className="text-xl font-semibold text-gray-900 mb-3 mt-4">{line.substring(4)}</h3>;
-        } else if (line.startsWith('**') && line.endsWith('**')) {
-          return <p key={index} className="font-bold text-gray-900 mb-2">{line.slice(2, -2)}</p>;
-        } else if (line.startsWith('- ')) {
-          return <li key={index} className="text-gray-700 mb-1 ml-4">{line.substring(2)}</li>;
-        } else if (line.trim() === '') {
-          return <br key={index} />;
-        } else if (line.includes('|')) {
-          // Simple table handling
-          const cells = line.split('|').map(cell => cell.trim()).filter(cell => cell);
-          if (cells.length > 1) {
-            return (
-              <tr key={index}>
-                {cells.map((cell, cellIndex) => (
-                  <td key={cellIndex} className="border border-gray-300 px-4 py-2 text-gray-700">
-                    {cell}
-                  </td>
-                ))}
-              </tr>
-            );
-          }
-        }
-        return <p key={index} className="text-gray-700 mb-4 leading-relaxed">{line}</p>;
-      });
-  };
+  const lines = content.split('\n');
+  const output: React.ReactNode[] = [];
+  let tableRows: React.ReactNode[] = [];
+  let insideTable = false;
+
+  lines.forEach((line, index) => {
+    if (line.includes('|')) {
+      const cells = line.split('|').map(cell => cell.trim()).filter(Boolean);
+      if (cells.length > 1) {
+        tableRows.push(
+          <tr key={index}>
+            {cells.map((cell, i) => (
+              <td key={i} className="border border-gray-300 px-4 py-2 text-gray-700">
+                {cell}
+              </td>
+            ))}
+          </tr>
+        );
+        insideTable = true;
+        return;
+      }
+    }
+
+    if (insideTable && tableRows.length) {
+      output.push(
+        <table key={`table-${index}`} className="mb-6 w-full border border-collapse border-gray-300">
+          <tbody>{tableRows}</tbody>
+        </table>
+      );
+      tableRows = [];
+      insideTable = false;
+    }
+
+    if (line.startsWith('# ')) {
+      output.push(<h1 key={index} className="text-3xl font-bold text-gray-900 mb-6 mt-8">{line.substring(2)}</h1>);
+    } else if (line.startsWith('## ')) {
+      output.push(<h2 key={index} className="text-2xl font-bold text-gray-900 mb-4 mt-6">{line.substring(3)}</h2>);
+    } else if (line.startsWith('### ')) {
+      output.push(<h3 key={index} className="text-xl font-semibold text-gray-900 mb-3 mt-4">{line.substring(4)}</h3>);
+    } else if (line.startsWith('- ')) {
+      output.push(<li key={index} className="text-gray-700 mb-1 ml-4">{line.substring(2)}</li>);
+    } else if (line.startsWith('**') && line.endsWith('**')) {
+      output.push(<p key={index} className="font-bold text-gray-900 mb-2">{line.slice(2, -2)}</p>);
+    } else if (line.trim() === '') {
+      output.push(<br key={index} />);
+    } else {
+      output.push(<p key={index} className="text-gray-700 mb-4 leading-relaxed">{line}</p>);
+    }
+  });
+
+  // Final table close
+  if (insideTable && tableRows.length) {
+    output.push(
+      <table key={`table-end`} className="mb-6 w-full border border-collapse border-gray-300">
+        <tbody>{tableRows}</tbody>
+      </table>
+    );
+  }
+
+  return output;
+};
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -171,12 +200,13 @@ const BlogPost: React.FC = () => {
                       </div>
                     </div>
                     <Link
-                      to={`/blog/${relatedPost.slug}`}
-                      className="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold"
-                    >
-                      Read More
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
+  			to={`/blog/${relatedPost.slug}`}
+ 			className="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold"
+			aria-label={`Read more about ${relatedPost.title}`}
+		    >
+			<span>Read more about {relatedPost.title}</span>
+			<ArrowRight className="ml-2 h-4 w-4" />
+ 		    </Link>
                   </div>
                 </article>
               ))}

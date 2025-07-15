@@ -118,17 +118,20 @@ const Contact: React.FC = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <a
-                    href="tel:+919987593277"
-                    className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center"
-                  >
-                    Call Now
-                  </a>
-                  <a
-                    href="mailto:info@creditmax.in"
-                    className="border border-blue-600 text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors text-center"
-                  >
-                    Email Us
-                  </a>
+ 		     href="tel:+919987593277"
+ 		     aria-label="Call CreditMax for loan assistance"
+  		     className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center"
+		  >
+  		     Call Now
+		  </a>
+		  <a
+  		     href="mailto:info@creditmax.in"
+		     aria-label="Email CreditMax for business loan support"
+  		     className="border border-blue-600 text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors text-center"
+		  >
+  		     Email Us
+		  </a>
+
                 </div>
               </div>
             </div>
