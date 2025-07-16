@@ -34,7 +34,7 @@ const Header: React.FC = () => {
               </div>
             </div>
             <div className="hidden md:block">
-              <span>A-504, Mahindra Vaibhav C.H.S, Asha Nagar, Kandivali East, Mumbai 400101</span>
+              <span></span>
             </div>
           </div>
         </div>
