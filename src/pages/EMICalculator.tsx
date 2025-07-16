@@ -1,58 +1,100 @@
 import React, { useState, useEffect } from 'react';
 import { Calculator, Info } from 'lucide-react';
+import jsPDF from 'jspdf';
+import logo from '../assets/logo.jpeg';
 
 const EMICalculator: React.FC = () => {
   const [principal, setPrincipal] = useState<number>(500000);
   const [rate, setRate] = useState<number>(10);
   const [tenure, setTenure] = useState<number>(5);
+  const [processingFeePercent, setProcessingFeePercent] = useState<number>(2);
   const [emi, setEmi] = useState<number>(0);
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [totalInterest, setTotalInterest] = useState<number>(0);
+  const [processingFee, setProcessingFee] = useState<number>(0);
+  const [gstOnFee, setGstOnFee] = useState<number>(0);
 
   const calculateEMI = () => {
     const monthlyRate = rate / 100 / 12;
     const numberOfPayments = tenure * 12;
+    const calculatedEMI =
+      monthlyRate === 0
+        ? principal / numberOfPayments
+        : (principal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) /
+          (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
 
-    if (monthlyRate === 0) {
-      const calculatedEMI = principal / numberOfPayments;
-      setEmi(calculatedEMI);
-      setTotalAmount(principal);
-      setTotalInterest(0);
-    } else {
-      const calculatedEMI =
-        (principal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) /
-        (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+    const calculatedTotalAmount = calculatedEMI * numberOfPayments;
+    const calculatedTotalInterest = calculatedTotalAmount - principal;
+    const calculatedProcessingFee = (principal * processingFeePercent) / 100;
+    const calculatedGST = calculatedProcessingFee * 0.18;
 
-      const calculatedTotalAmount = calculatedEMI * numberOfPayments;
-      const calculatedTotalInterest = calculatedTotalAmount - principal;
-
-      setEmi(calculatedEMI);
-      setTotalAmount(calculatedTotalAmount);
-      setTotalInterest(calculatedTotalInterest);
-    }
+    setEmi(calculatedEMI);
+    setTotalAmount(calculatedTotalAmount + calculatedProcessingFee + calculatedGST);
+    setTotalInterest(calculatedTotalInterest);
+    setProcessingFee(calculatedProcessingFee);
+    setGstOnFee(calculatedGST);
   };
 
   useEffect(() => {
     calculateEMI();
-  }, [principal, rate, tenure]);
+  }, [principal, rate, tenure, processingFeePercent]);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
+  const formatCurrency = (amount: number) =>
+    new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
       maximumFractionDigits: 0,
     }).format(amount);
-  };
 
   const handleReset = () => {
     setPrincipal(500000);
     setRate(10);
     setTenure(5);
+    setProcessingFeePercent(2);
+  };
+
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    const img = new Image();
+    img.src = logo;
+    img.onload = () => {
+      doc.addImage(img, 'JPEG', 20, 1, 20, 20);
+      doc.setFontSize(16);
+      doc.text('Loan Summary', 20, 35);
+
+      const rows = [
+        ['Principal', formatCurrency(principal)],
+        ['Total Interest', formatCurrency(totalInterest)],
+        ['Processing Fee', formatCurrency(processingFee)],
+        ['GST on Fee (18%)', formatCurrency(gstOnFee)],
+        ['Total Cost to Client', formatCurrency(totalAmount)],
+      ];
+
+      let y = 50;
+      rows.forEach(([label, value]) => {
+        doc.setFontSize(12);
+        doc.text(`${label}:`, 20, y);
+        doc.text(value, 120, y);
+        y += 10;
+      });
+
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const contactText = 'info@creditmax.in | +91-99875 93277 | www.creditmax.in';
+      const textWidth = doc.getTextWidth(contactText);
+      const x = (pageWidth - textWidth) / 2;
+      const pageHeight = doc.internal.pageSize.getHeight();
+      doc.setFontSize(10);
+      doc.text(contactText, x, pageHeight - 15);
+
+      doc.save('EMI-Summary.pdf');
+    };
   };
 
   const loanBreakdown = [
     { label: 'Principal Amount', value: principal, color: 'bg-blue-500' },
     { label: 'Total Interest', value: totalInterest, color: 'bg-red-500' },
+    { label: 'Processing Fee', value: processingFee, color: 'bg-green-500' },
+    { label: 'GST on Fee', value: gstOnFee, color: 'bg-purple-500' },
   ];
 
   return (
@@ -62,9 +104,7 @@ const EMICalculator: React.FC = () => {
           <div className="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
             <Calculator className="h-10 w-10 text-blue-600" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            EMI Calculator
-          </h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">EMI Calculator</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Calculate your loan EMI and plan your finances better
           </p>
@@ -84,34 +124,19 @@ const EMICalculator: React.FC = () => {
               </div>
 
               <div className="space-y-6">
-                {/* Loan Amount */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Loan Amount
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-3 text-gray-500">₹</span>
-                    <input
-                      type="number"
-                      value={principal}
-                      onChange={(e) => {
-                        const val = Number(e.target.value);
-                        if (!isNaN(val)) setPrincipal(val);
-                      }}
-                      onBlur={() => {
-                        setPrincipal((prev) =>
-                          Math.min(10000000, Math.max(100000, prev || 100000))
-                        );
-                      }}
-                      className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-                      placeholder="Enter loan amount"
-                    />
-                  </div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Loan Amount</label>
+                  <input
+                    type="number"
+                    value={principal}
+                    onChange={(e) => setPrincipal(Number(e.target.value))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+                  />
                   <input
                     type="range"
                     min="100000"
                     max="10000000"
-                    step="50000"
+                    step="10000"
                     value={principal}
                     onChange={(e) => setPrincipal(Number(e.target.value))}
                     className="w-full mt-2 accent-blue-600"
@@ -122,18 +147,13 @@ const EMICalculator: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Interest Rate */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Interest Rate (% per annum)
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Interest Rate (% p.a.)</label>
                   <input
                     type="number"
                     value={rate}
-                    onChange={(e) => setRate(Math.max(1, Number(e.target.value)))}
-                    step="0.1"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-                    placeholder="Enter interest rate"
+                    onChange={(e) => setRate(Number(e.target.value))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg"
                   />
                   <input
                     type="range"
@@ -141,7 +161,7 @@ const EMICalculator: React.FC = () => {
                     max="25"
                     step="0.1"
                     value={rate}
-                    onChange={(e) => setRate(Math.max(1, Number(e.target.value)))}
+                    onChange={(e) => setRate(Number(e.target.value))}
                     className="w-full mt-2 accent-blue-600"
                   />
                   <div className="flex justify-between text-sm text-gray-500 mt-1">
@@ -150,45 +170,60 @@ const EMICalculator: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Loan Tenure */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Loan Tenure (Years)
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Loan Tenure (Years)</label>
                   <input
                     type="number"
                     value={tenure}
-                    onChange={(e) => setTenure(Math.max(1, Number(e.target.value)))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-                    placeholder="Enter loan tenure"
+                    onChange={(e) => setTenure(Number(e.target.value))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg"
                   />
                   <input
                     type="range"
                     min="1"
                     max="30"
+                    step="1"
                     value={tenure}
-                    onChange={(e) => setTenure(Math.max(1, Number(e.target.value)))}
+                    onChange={(e) => setTenure(Number(e.target.value))}
                     className="w-full mt-2 accent-blue-600"
                   />
                   <div className="flex justify-between text-sm text-gray-500 mt-1">
-                    <span>1 Year</span>
-                    <span>30 Years</span>
+                    <span>1 Yr</span>
+                    <span>30 Yrs</span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Processing Fee (% of Principal)</label>
+                  <input
+                    type="number"
+                    value={processingFeePercent}
+                    onChange={(e) => setProcessingFeePercent(Number(e.target.value))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+                  />
+                  <input
+                    type="range"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    value={processingFeePercent}
+                    onChange={(e) => setProcessingFeePercent(Number(e.target.value))}
+                    className="w-full mt-2 accent-blue-600"
+                  />
+                  <div className="flex justify-between text-sm text-gray-500 mt-1">
+                    <span>0%</span>
+                    <span>5%</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Results */}
           <div className="space-y-6">
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Monthly EMI</h3>
-              <div className="text-3xl font-bold text-blue-600 mb-2">
-                {formatCurrency(emi)}
-              </div>
-              <p className="text-sm text-gray-600">
-                Your monthly installment
-              </p>
+              <div className="text-3xl font-bold text-blue-600 mb-2">{formatCurrency(emi)}</div>
+              <p className="text-sm text-gray-600">Your monthly installment</p>
             </div>
 
             <div className="bg-white rounded-xl shadow-lg p-6">
@@ -201,6 +236,14 @@ const EMICalculator: React.FC = () => {
                 <div className="flex justify-between">
                   <span className="text-gray-600">Total Interest</span>
                   <span className="font-semibold">{formatCurrency(totalInterest)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Processing Fee</span>
+                  <span className="font-semibold">{formatCurrency(processingFee)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">GST on Fee</span>
+                  <span className="font-semibold">{formatCurrency(gstOnFee)}</span>
                 </div>
                 <div className="flex justify-between border-t pt-3">
                   <span className="text-gray-900 font-medium">Total Amount</span>
@@ -221,14 +264,18 @@ const EMICalculator: React.FC = () => {
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
                         className={`${item.color} h-2 rounded-full`}
-                        style={{
-                          width: `${(item.value / totalAmount) * 100}%`,
-                        }}
+                        style={{ width: `${(item.value / totalAmount) * 100}%` }}
                       />
                     </div>
                   </div>
                 ))}
               </div>
+              <button
+                onClick={handleExportPDF}
+                className="mt-6 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+              >
+                Export PDF Summary
+              </button>
             </div>
 
             <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
@@ -246,7 +293,6 @@ const EMICalculator: React.FC = () => {
           </div>
         </div>
 
-        {/* Quick Loan Options */}
         <div className="mt-12 bg-white rounded-xl shadow-lg p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Loan Options</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
