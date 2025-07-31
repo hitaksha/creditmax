@@ -2,24 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Calculator, Info } from 'lucide-react';
 import jsPDF from 'jspdf';
 
-// Helper: Number to words (Indian style: thousand, lakh, crore)
-const numberToWords = (num) => {
-  num = String(num).replace(/[^0-9.]/g, '');
-  if (!num || isNaN(Number(num))) return '';
-  const n = Number(num);
-  if (n === 0) return 'zero';
-  if (n < 1000) return `${n}`;
-  if (n < 100000) return (
-    `${Math.floor(n / 1000)} thousand${n % 1000 !== 0 ? ' ' + (n % 1000) : ''}`
-  );
-  if (n < 10000000) return (
-    `${Math.floor(n / 100000)} lakh${n % 100000 !== 0 ? ' ' + (n % 100000) : ''}`
-  );
-  return (
-    `${Math.floor(n / 10000000)} crore${n % 10000000 !== 0 ? ' ' + (n % 10000000) : ''}`
-  );
-};
-
+// For UI display
 const formatCurrency = (amount) =>
   Number.isFinite(amount) && amount !== 0
     ? new Intl.NumberFormat('en-IN', {
@@ -29,7 +12,24 @@ const formatCurrency = (amount) =>
       }).format(amount)
     : '-';
 
-// EMI and related calculations
+// For PDF export: use Rs. instead of ₹
+const formatCurrencyPDF = (amount) =>
+  Number.isFinite(amount) && amount !== 0
+    ? 'Rs. ' + amount.toLocaleString('en-IN', { maximumFractionDigits: 0 })
+    : '-';
+
+const numberToWords = (num) => {
+  if (!num || isNaN(Number(num))) return '';
+  const n = Number(num);
+  if (n === 0) return 'zero';
+  if (n < 1000) return `${n}`;
+  if (n < 100000)
+    return `${Math.floor(n / 1000)} thousand${n % 1000 !== 0 ? ' ' + (n % 1000) : ''}`;
+  if (n < 10000000)
+    return `${Math.floor(n / 100000)} lakh${n % 100000 !== 0 ? ' ' + (n % 100000) : ''}`;
+  return `${Math.floor(n / 10000000)} crore${n % 10000000 !== 0 ? ' ' + (n % 10000000) : ''}`;
+};
+
 function calculateNumbers(principal, rate, tenure, processingFeePercent) {
   const valid = Number(principal) > 0 && Number(rate) > 0 && Number(tenure) > 0;
   if (!valid) {
@@ -48,10 +48,11 @@ function calculateNumbers(principal, rate, tenure, processingFeePercent) {
 
   const monthlyRate = r / 100 / 12;
   const n = t * 12;
-  const emi = monthlyRate === 0
-    ? p / n
-    : (p * monthlyRate * Math.pow(1 + monthlyRate, n)) /
-      (Math.pow(1 + monthlyRate, n) - 1);
+  const emi =
+    monthlyRate === 0
+      ? p / n
+      : (p * monthlyRate * Math.pow(1 + monthlyRate, n)) /
+        (Math.pow(1 + monthlyRate, n) - 1);
 
   const totalAmount = emi * n;
   const totalInterest = totalAmount - p;
@@ -67,7 +68,6 @@ function calculateNumbers(principal, rate, tenure, processingFeePercent) {
   };
 }
 
-// Amortization logic
 const getAmortizationSchedule = (principal, rate, tenure, emi) => {
   if (
     !principal ||
@@ -77,11 +77,12 @@ const getAmortizationSchedule = (principal, rate, tenure, emi) => {
     Number(principal) === 0 ||
     Number(rate) === 0 ||
     Number(tenure) === 0
-  ) return [];
+  )
+    return [];
   let balance = Number(principal);
   const monthlyRate = Number(rate) / 100 / 12;
   const months = Number(tenure) * 12;
-  let schedule = [];
+  const schedule = [];
   for (let i = 1; i <= months; i++) {
     const interest = balance * monthlyRate;
     let principalComp = emi - interest;
@@ -98,7 +99,6 @@ const getAmortizationSchedule = (principal, rate, tenure, emi) => {
   return schedule;
 };
 
-// Export PDF function
 const handleExportPDF = ({
   principal,
   rate,
@@ -110,7 +110,6 @@ const handleExportPDF = ({
   gstOnFee,
   totalAmount,
   schedule,
-  formatCurrency,
 }) => {
   const doc = new jsPDF({
     orientation: 'portrait',
@@ -121,28 +120,37 @@ const handleExportPDF = ({
   let y = 15;
 
   doc.setFontSize(18);
-  doc.text('Loan EMI & Amortization Schedule', 15, y); y += 12;
+  doc.text('Loan EMI & Amortization Schedule', 15, y);
+  y += 12;
 
   doc.setFontSize(12);
-  doc.text(`Loan Amount: ${formatCurrency(Number(principal)) || '-'}`, 15, y);
-  doc.text(`Interest Rate: ${rate} %`, 110, y); y += 9;
+  doc.text(`Loan Amount: ${formatCurrencyPDF(Number(principal)) || '-'}`, 15, y);
+  doc.text(`Interest Rate: ${rate} %`, 110, y);
+  y += 9;
   doc.text(`Tenure: ${tenure} years`, 15, y);
-  doc.text(`Processing Fee: ${processingFeePercent || 0} %`, 110, y); y += 14;
+  doc.text(`Processing Fee: ${processingFeePercent || 0} %`, 110, y);
+  y += 14;
 
   doc.setFontSize(14);
-  doc.text('Summary', 15, y); y += 9;
+  doc.text('Summary', 15, y);
+  y += 9;
 
   doc.setFontSize(12);
-  doc.text(`Monthly EMI: ${formatCurrency(emi)}`, 15, y); y += 7;
-  doc.text(`Total Interest: ${formatCurrency(totalInterest)}`, 15, y); y += 7;
-  doc.text(`Processing Fee: ${formatCurrency(processingFee)}`, 15, y); y += 7;
-  doc.text(`GST on Fee: ${formatCurrency(gstOnFee)}`, 15, y); y += 7;
-  doc.text(`Total Cost: ${formatCurrency(totalAmount)}`, 15, y); y += 14;
+  doc.text(`Monthly EMI: ${formatCurrencyPDF(emi)}`, 15, y);
+  y += 7;
+  doc.text(`Total Interest: ${formatCurrencyPDF(totalInterest)}`, 15, y);
+  y += 7;
+  doc.text(`Processing Fee: ${formatCurrencyPDF(processingFee)}`, 15, y);
+  y += 7;
+  doc.text(`GST on Fee: ${formatCurrencyPDF(gstOnFee)}`, 15, y);
+  y += 7;
+  doc.text(`Total Cost: ${formatCurrencyPDF(totalAmount)}`, 15, y);
+  y += 14;
 
   doc.setFontSize(14);
-  doc.text('Amortization Schedule', 15, y); y += 9;
+  doc.text('Amortization Schedule', 15, y);
+  y += 9;
 
-  // Table header
   doc.setFontSize(11);
   doc.text('Month', 15, y);
   doc.text('Principal', 40, y);
@@ -156,9 +164,9 @@ const handleExportPDF = ({
       y = 15;
     }
     doc.text(`${row.month}`, 15, y);
-    doc.text(formatCurrency(row.principalPaid), 40, y);
-    doc.text(formatCurrency(row.interestPaid), 75, y);
-    doc.text(formatCurrency(row.closingBalance), 110, y);
+    doc.text(formatCurrencyPDF(row.principalPaid), 40, y);
+    doc.text(formatCurrencyPDF(row.interestPaid), 75, y);
+    doc.text(formatCurrencyPDF(row.closingBalance), 110, y);
     y += 7;
   });
 
@@ -166,13 +174,10 @@ const handleExportPDF = ({
 };
 
 const EMICalculator = () => {
-  // Inputs (all blank by default)
   const [principal, setPrincipal] = useState('');
   const [rate, setRate] = useState('');
   const [tenure, setTenure] = useState('');
   const [processingFeePercent, setProcessingFeePercent] = useState('');
-
-  // Outputs
   const [emi, setEmi] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalInterest, setTotalInterest] = useState(0);
@@ -180,7 +185,6 @@ const EMICalculator = () => {
   const [gstOnFee, setGstOnFee] = useState(0);
   const [schedule, setSchedule] = useState([]);
 
-  // Compute all values on field change
   useEffect(() => {
     const {
       emi: calcEmi,
@@ -200,7 +204,6 @@ const EMICalculator = () => {
     setSchedule(amort);
   }, [principal, rate, tenure, processingFeePercent]);
 
-  // Reset
   const handleReset = () => {
     setPrincipal('');
     setRate('');
@@ -218,7 +221,6 @@ const EMICalculator = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="text-center mb-12">
           <div className="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
             <Calculator className="h-10 w-10 text-blue-600" />
@@ -229,9 +231,7 @@ const EMICalculator = () => {
           </p>
         </div>
 
-        {/* Main content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          {/* Inputs */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-lg p-8">
               <div className="flex justify-between items-center mb-8">
@@ -245,7 +245,6 @@ const EMICalculator = () => {
                 </button>
               </div>
               <div className="space-y-10">
-                {/* Loan Amount */}
                 <div>
                   <label className="block text-lg font-medium text-gray-700 mb-2">
                     Loan Amount
@@ -272,7 +271,6 @@ const EMICalculator = () => {
                     <div className="text-md text-gray-500 mt-2">{numberToWords(principal)}</div>
                   )}
                 </div>
-                {/* Interest Rate */}
                 <div>
                   <label className="block text-lg font-medium text-gray-700 mb-2">
                     Interest Rate (% p.a.)
@@ -300,9 +298,10 @@ const EMICalculator = () => {
                     <div className="text-md text-gray-500 mt-2">{numberToWords(rate)} percent</div>
                   )}
                 </div>
-                {/* Tenure */}
                 <div>
-                  <label className="block text-lg font-medium text-gray-700 mb-2">Loan Tenure (Years)</label>
+                  <label className="block text-lg font-medium text-gray-700 mb-2">
+                    Loan Tenure (Years)
+                  </label>
                   <input
                     type="number"
                     value={tenure}
@@ -323,11 +322,10 @@ const EMICalculator = () => {
                   />
                   {tenure && (
                     <div className="text-md text-gray-500 mt-2">
-                      {numberToWords(tenure)} {tenure === "1" ? "year" : "years"}
+                      {numberToWords(tenure)} {tenure === '1' ? 'year' : 'years'}
                     </div>
                   )}
                 </div>
-                {/* Processing Fee */}
                 <div>
                   <label className="block text-lg font-medium text-gray-700 mb-2">
                     Processing Fee (% of Principal)
@@ -352,16 +350,15 @@ const EMICalculator = () => {
                     className="w-full mt-3 accent-blue-600"
                   />
                   {processingFeePercent && (
-                    <div className="text-md text-gray-500 mt-2">{numberToWords(processingFeePercent)} percent</div>
+                    <div className="text-md text-gray-500 mt-2">
+                      {numberToWords(processingFeePercent)} percent
+                    </div>
                   )}
                 </div>
               </div>
             </div>
           </div>
-
-          {/* Results & breakdown */}
           <div className="space-y-8">
-            {/* EMI */}
             <div className="bg-white rounded-xl shadow-lg p-8">
               <h3 className="text-2xl font-semibold text-gray-900 mb-5">Monthly EMI</h3>
               <div className="text-4xl font-bold text-blue-600 mb-3">
@@ -369,7 +366,6 @@ const EMICalculator = () => {
               </div>
               <p className="text-lg text-gray-600">Your monthly installment</p>
             </div>
-            {/* Loan Summary */}
             <div className="bg-white rounded-xl shadow-lg p-8">
               <h3 className="text-2xl font-semibold text-gray-900 mb-5">Loan Summary</h3>
               <div className="space-y-4 text-lg">
@@ -394,7 +390,6 @@ const EMICalculator = () => {
                   <span>{formatCurrency(totalAmount)}</span>
                 </div>
               </div>
-
               <button
                 onClick={() =>
                   handleExportPDF({
@@ -408,7 +403,6 @@ const EMICalculator = () => {
                     gstOnFee,
                     totalAmount,
                     schedule,
-                    formatCurrency,
                   })
                 }
                 disabled={
@@ -436,7 +430,6 @@ const EMICalculator = () => {
                 Export PDF Summary
               </button>
             </div>
-            {/* Loan Breakdown Bars */}
             <div className="bg-white rounded-xl shadow-lg p-8">
               <h3 className="text-2xl font-semibold text-gray-900 mb-5">Loan Breakdown</h3>
               <div className="space-y-5 text-lg">
@@ -462,7 +455,6 @@ const EMICalculator = () => {
                 )}
               </div>
             </div>
-            {/* Important Note */}
             <div className="bg-blue-50 rounded-xl p-6 border border-blue-200 text-lg">
               <div className="flex items-start space-x-3">
                 <Info className="h-6 w-6 text-blue-600 mt-1 flex-shrink-0" />
@@ -477,8 +469,6 @@ const EMICalculator = () => {
             </div>
           </div>
         </div>
-
-        {/* Amortization Table */}
         <div className="mt-16 bg-white rounded-xl shadow-lg p-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Loan Amortization Schedule</h2>
           {schedule && schedule.length > 0 ? (
@@ -510,8 +500,6 @@ const EMICalculator = () => {
             </div>
           )}
         </div>
-
-        {/* Quick loan options */}
         <div className="mt-16 bg-white rounded-xl shadow-lg p-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Quick Loan Options</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-lg">
