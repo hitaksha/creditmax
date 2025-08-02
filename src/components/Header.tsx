@@ -6,6 +6,7 @@ const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
+  // Insert "Partner Program" after "EMI Calculator"
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Business Loan', href: '/business-loan' },
@@ -13,6 +14,7 @@ const Header: React.FC = () => {
     { name: 'Home Loan', href: '/home-loan' },
     { name: 'Personal Loan', href: '/personal-loan' },
     { name: 'EMI Calculator', href: '/emi-calculator' },
+    { name: 'Partner Program', href: '/partner-program' }, // New menu item
     { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '/contact' },
   ];
