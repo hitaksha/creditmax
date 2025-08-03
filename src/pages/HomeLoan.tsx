@@ -47,37 +47,38 @@ const HomeLoan: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-purple-900 to-purple-700 text-white py-20">
+      <section className="bg-gradient-to-r from-[#11999E] to-[#197278] text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
                 Home Loan
               </h1>
-              <p className="text-xl mb-8 text-purple-100">
+              <p className="text-xl mb-8 text-[#cffafa]">
                 Turn your dream home into reality with our affordable home loans 
                 starting from 7.5% annual interest rate.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 text-center">
-                  <div className="text-2xl font-bold">7.5%*</div>
-                  <div className="text-sm">Starting Rate</div>
+                  {/* White color for stat */}
+                  <div className="text-2xl font-bold text-white">7.5%*</div>
+                  <div className="text-sm text-white">Starting Rate</div>
                 </div>
                 <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 text-center">
-                  <div className="text-2xl font-bold">₹10Cr</div>
-                  <div className="text-sm">Max Amount</div>
+                  <div className="text-2xl font-bold text-white">₹10Cr</div>
+                  <div className="text-sm text-white">Max Amount</div>
                 </div>
                 <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 text-center">
-                  <div className="text-2xl font-bold">30 Years</div>
-                  <div className="text-sm">Max Tenure</div>
+                  <div className="text-2xl font-bold text-white">30 Years</div>
+                  <div className="text-sm text-white">Max Tenure</div>
                 </div>
               </div>
             </div>
             <div className="relative">
               <div className="bg-white rounded-xl shadow-2xl p-8">
                 <div className="text-center mb-6">
-                  <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Users className="h-8 w-8 text-purple-600" />
+                  <div className="bg-[#E0F4F3] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Users className="h-8 w-8 text-[#11999E]" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900">Home Loan Calculator</h3>
                 </div>
@@ -85,8 +86,8 @@ const HomeLoan: React.FC = () => {
                   defaultPrincipal={3000000}
                   defaultRate={7.5}
                   defaultTenure={20}
-                  primaryColor="purple"
-                  accentColor="purple"
+                  primaryColor="#2EC4B6"
+                  accentColor="#11999E"
                 />
               </div>
             </div>
@@ -109,8 +110,8 @@ const HomeLoan: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
               <div key={index} className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow">
-                <div className="bg-purple-100 w-16 h-16 rounded-lg flex items-center justify-center mb-6">
-                  <feature.icon className="h-8 w-8 text-purple-600" />
+                <div className="bg-[#E0F4F3] w-16 h-16 rounded-lg flex items-center justify-center mb-6">
+                  <feature.icon className="h-8 w-8 text-[#2EC4B6]" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
@@ -129,7 +130,7 @@ const HomeLoan: React.FC = () => {
               <div className="space-y-4">
                 {eligibility.map((item, index) => (
                   <div key={index} className="flex items-start space-x-3">
-                    <CheckCircle className="h-6 w-6 text-purple-500 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-6 w-6 text-[#2EC4B6] mt-0.5 flex-shrink-0" />
                     <span className="text-gray-700">{item}</span>
                   </div>
                 ))}
@@ -141,7 +142,7 @@ const HomeLoan: React.FC = () => {
               <div className="space-y-4">
                 {documents.map((item, index) => (
                   <div key={index} className="flex items-start space-x-3">
-                    <ArrowRight className="h-6 w-6 text-purple-500 mt-0.5 flex-shrink-0" />
+                    <ArrowRight className="h-6 w-6 text-[#2EC4B6] mt-0.5 flex-shrink-0" />
                     <span className="text-gray-700">{item}</span>
                   </div>
                 ))}
@@ -165,17 +166,17 @@ const HomeLoan: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-              <div className="text-4xl font-bold text-purple-600 mb-4">7.5%*</div>
+              <div className="text-4xl font-bold text-[#2EC4B6] mb-4">7.5%*</div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Low Interest Rate</h3>
               <p className="text-gray-600">Starting from 7.5% annual interest rate</p>
             </div>
             <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-              <div className="text-4xl font-bold text-purple-600 mb-4">₹10Cr</div>
+              <div className="text-4xl font-bold text-[#2EC4B6] mb-4">₹10Cr</div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">High Loan Amount</h3>
               <p className="text-gray-600">Get up to ₹10 crores for your dream home</p>
             </div>
             <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-              <div className="text-4xl font-bold text-purple-600 mb-4">30 Years</div>
+              <div className="text-4xl font-bold text-[#2EC4B6] mb-4">30 Years</div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Flexible Tenure</h3>
               <p className="text-gray-600">Repayment tenure up to 30 years</p>
             </div>
@@ -198,7 +199,8 @@ const HomeLoan: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-gray-50 rounded-xl p-8">
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Purchase Home Loan</h3>
-              <p className="text-gray-600 mb-4">
+              {/* Black font here as requested */}
+              <p className="text-black mb-4">
                 Finance your dream home purchase with our competitive home loan rates.
               </p>
               <ul className="space-y-2 text-sm text-gray-600">
@@ -209,7 +211,8 @@ const HomeLoan: React.FC = () => {
             </div>
             <div className="bg-gray-50 rounded-xl p-8">
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Construction Home Loan</h3>
-              <p className="text-gray-600 mb-4">
+              {/* Black font here as requested */}
+              <p className="text-black mb-4">
                 Build your dream home with our flexible construction home loan options.
               </p>
               <ul className="space-y-2 text-sm text-gray-600">
@@ -220,7 +223,8 @@ const HomeLoan: React.FC = () => {
             </div>
             <div className="bg-gray-50 rounded-xl p-8">
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Home Improvement Loan</h3>
-              <p className="text-gray-600 mb-4">
+              {/* Black font here as requested */}
+              <p className="text-black mb-4">
                 Renovate or improve your existing home with our home improvement loans.
               </p>
               <ul className="space-y-2 text-sm text-gray-600">
@@ -247,8 +251,8 @@ const HomeLoan: React.FC = () => {
               </p>
               <div className="space-y-6">
                 <div className="flex items-center space-x-4">
-                  <div className="bg-purple-100 p-3 rounded-lg">
-                    <Clock className="h-6 w-6 text-purple-600" />
+                  <div className="bg-[#E0F4F3] p-3 rounded-lg">
+                    <Clock className="h-6 w-6 text-[#2EC4B6]" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">Quick Processing</h4>
@@ -256,8 +260,8 @@ const HomeLoan: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <div className="bg-purple-100 p-3 rounded-lg">
-                    <Shield className="h-6 w-6 text-purple-600" />
+                  <div className="bg-[#E0F4F3] p-3 rounded-lg">
+                    <Shield className="h-6 w-6 text-[#2EC4B6]" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">Low Interest Rates</h4>
@@ -265,8 +269,8 @@ const HomeLoan: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <div className="bg-purple-100 p-3 rounded-lg">
-                    <Users className="h-6 w-6 text-purple-600" />
+                  <div className="bg-[#E0F4F3] p-3 rounded-lg">
+                    <Users className="h-6 w-6 text-[#2EC4B6]" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">Expert Support</h4>
