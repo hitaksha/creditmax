@@ -1,9 +1,7 @@
-// src/pages/PartnerProgram.tsx
-
 import React from "react";
 import { CheckCircle, ArrowRight, Info } from "lucide-react";
-import desktopBanner from "../data/banner_desktop.png"; // Update paths if needed
-import mobileBanner from "../data/banner_mobile.png";
+import desktopBanner from "../data/banner_desktop.png"; // Your desktop image path
+import mobileBanner from "../data/banner_mobile.png";   // Your mobile image path
 
 export default function PartnerProgram() {
   return (
@@ -24,8 +22,8 @@ export default function PartnerProgram() {
           className="block md:hidden w-full h-96 object-cover rounded-b-xl"
           loading="lazy"
         />
-        {/* Overlay Content with increased top padding to bring text down */}
-        <div className="absolute inset-0 flex flex-col justify-start items-center bg-black bg-opacity-30 rounded-b-xl px-4 pt-20 pb-4 text-center">
+        {/* Overlay Content (higher up on mobile, lower on desktop) */}
+        <div className="absolute inset-0 flex flex-col justify-start items-center bg-black bg-opacity-30 rounded-b-xl px-4 pt-8 md:pt-20 pb-4 text-center">
           <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white mb-3 drop-shadow-lg">
             CreditMax Circle
           </h1>
@@ -47,7 +45,7 @@ export default function PartnerProgram() {
           About CreditMax Circle
         </h2>
         <p className="text-lg text-black text-center mb-6">
-          <span className="font-bold">CreditMax Circle</span> is a community built for individuals and businesses to grow through trusted partnerships.  
+          <span className="font-bold">CreditMax Circle</span> is a community built for individuals and businesses to grow through trusted partnerships.
           Earn attractive commissions by referring clients to CreditMax loans. Whether you’re a professional, consultant, or entrepreneur, CreditMax Circle empowers you to create new earning streams while helping others access the best loans.
         </p>
       </section>
