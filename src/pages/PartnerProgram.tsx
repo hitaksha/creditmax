@@ -24,18 +24,21 @@ export default function PartnerProgram() {
         />
         {/* Overlay Content (higher up on mobile, lower on desktop) */}
         <div className="absolute inset-0 flex flex-col justify-start items-center bg-black bg-opacity-30 rounded-b-xl px-4 pt-8 md:pt-20 pb-4 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white mb-3 drop-shadow-lg">
-            CreditMax Circle
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold mb-3 drop-shadow-lg" style={{ color: '#7ed957' }}>
+  		CreditMax Circle
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-white font-semibold max-w-xl mx-auto drop-shadow-lg mb-4">
             Welcome to CreditMax Circle — your trusted community for growth and earnings.
           </p>
-          <a
-            href="/partner-signup"
-            className="inline-block px-6 py-3 rounded-lg bg-blue-600 font-bold text-lg shadow-lg hover:bg-blue-700 transition text-white"
-          >
-            Join the Circle
-          </a>
+         <a
+  		href="/partner-signup"
+  		className="inline-block px-6 py-3 rounded-lg font-bold text-lg shadow-lg transition text-white"
+ 		 style={{ backgroundColor: '#7ed957' }}
+ 		 onMouseOver={e => (e.currentTarget.style.backgroundColor = '#5dbb3b')}
+ 		 onMouseOut={e => (e.currentTarget.style.backgroundColor = '#7ed957')}
+		>
+  		Join the Circle
+	</a>
         </div>
       </div>
 

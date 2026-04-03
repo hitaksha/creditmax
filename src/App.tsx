@@ -48,7 +48,7 @@ function App() {
       </main>
 
       <FloatingWhatsApp
-        phoneNumber="919987593277"
+        phoneNumber="919324593277"
         accountName="CreditMax"
         chatMessage="Hello! How can we help you today?"
         statusMessage="Typically replies within minutes"
